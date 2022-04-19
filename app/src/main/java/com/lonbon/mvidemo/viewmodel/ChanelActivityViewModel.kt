@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import kotlin.random.Random
 
 /**
@@ -30,12 +31,17 @@ class ChanelActivityViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            userIntent.consumeAsFlow().collect {
-                when (it) {
-                    is MainIntent.FetchNew -> fetchAdd()
-                    is MainIntent.FetchNewError -> fetchNewsReset()
+            try {
+                userIntent.consumeAsFlow().collect {
+                    when (it) {
+                        is MainIntent.FetchNew -> fetchAdd()
+                        is MainIntent.FetchNewError -> fetchNewsReset()
+                    }
                 }
+            }catch (e:Exception){
+
             }
+
         }
     }
 
@@ -46,7 +52,12 @@ class ChanelActivityViewModel : ViewModel() {
      */
     fun dispatch(viewAction: MainIntent) {
         viewModelScope.launch {
-            userIntent.send(viewAction)
+            try {
+                userIntent.send(viewAction)
+            }catch (e:Exception){
+
+            }
+
         }
     }
 
@@ -59,17 +70,27 @@ class ChanelActivityViewModel : ViewModel() {
 
     fun fetchAdd() {
         viewModelScope.launch {
-            i++
-            Log.d("live", "fetchNews1     " + i)
-            _state.emit(i)
+            try {
+                i++
+                Log.d("live", "fetchNews1     " + i)
+                _state.emit(i)
+            }catch (e:Exception){
+
+            }
+
         }
     }
 
     fun fetchNewsReset() {
         viewModelScope.launch {
-            i = 0
-            Log.d("live", "fetchNewsReset     " + i)
-            _state.emit(i)
+            try {
+                i = 0
+                Log.d("live", "fetchNewsReset     " + i)
+                _state.emit(i)
+            }catch (e:Exception){
+
+            }
+
         }
     }
 

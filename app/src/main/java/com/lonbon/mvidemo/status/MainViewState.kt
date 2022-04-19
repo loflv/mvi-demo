@@ -21,19 +21,14 @@ sealed class MainViewState {
      *
      * @property error
      */
-    data class Error(val error: String?) : MainViewState()
+    data class Error(val errorType: Int, val error: String?) : MainViewState()
 
     /**
      * 请求成功事件
      *
      * @property news
      */
-    data class RequestOneSuccess(val news: String) : MainViewState()
+    data class RequestOneSuccess<T>(val successType: Int, val news: T) : MainViewState()
 
-
-    data class RequestTwoSuccess(val news: String) : MainViewState()
-
-
-    data class Error2(val error: String?) : MainViewState()
 
 }

@@ -16,6 +16,7 @@ import com.lonbon.mvidemo.viewmodel.ChanelActivityViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.observeOn
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 /**
  * 用于验证userIntent的线程安全
@@ -77,11 +78,13 @@ class ChannelActivity : AppCompatActivity() {
 
         val text = findViewById<TextView>(R.id.butResult)
         lifecycleScope.launch {
-            viewModel.state.collect {
-                text.text = "结果是${it}"
+            try {
+                viewModel.state.collect {
+                    text.text = "结果是${it}"
+                }
+            } catch (e: Exception) {
+
             }
         }
-
-
     }
 }

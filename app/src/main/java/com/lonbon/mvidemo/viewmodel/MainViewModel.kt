@@ -35,12 +35,17 @@ class MainViewModel : ViewModel() {
     init {
         //所有的intent集中处理
         viewModelScope.launch {
-            userIntent.consumeAsFlow().collect {
-                when (it) {
-                    is MainIntent.FetchNew -> fetchNews()
-                    is MainIntent.FetchNewError -> fetchNewsError()
+            try {
+                userIntent.consumeAsFlow().collect {
+                    when (it) {
+                        is MainIntent.FetchNew -> fetchNews()
+                        is MainIntent.FetchNewError -> fetchNewsError()
+                    }
                 }
+            } catch (e: java.lang.Exception) {
+
             }
+
         }
     }
 
@@ -52,7 +57,12 @@ class MainViewModel : ViewModel() {
      */
     fun dispatch(viewAction: MainIntent) {
         viewModelScope.launch {
-            userIntent.send(viewAction)
+            try {
+                userIntent.send(viewAction)
+            } catch (e: java.lang.Exception) {
+
+            }
+
         }
     }
 
@@ -62,9 +72,9 @@ class MainViewModel : ViewModel() {
      */
     private fun fetchNews() {
         viewModelScope.launch {
-            //返回状态
-            _state.emit(MainViewState.Loading)
             try {
+                //返回状态
+                _state.emit(MainViewState.Loading)
                 val hotkey = repository.getHotkey()
                 _state.emit(
                     when {
@@ -72,15 +82,15 @@ class MainViewModel : ViewModel() {
                             MainViewState.NoNetWork
                         }
                         hotkey.errorCode != 0 -> {
-                            MainViewState.Error("请求失败了")
+                            MainViewState.Error(1, "请求失败了")
                         }
                         else -> {
-                            MainViewState.RequestOneSuccess(hotkey.dataStr)
+                            MainViewState.RequestOneSuccess(1, hotkey.dataStr)
                         }
                     }
                 )
             } catch (e: Exception) {
-                _state.emit(MainViewState.Error(e.localizedMessage))
+                _state.emit(MainViewState.Error(1, e.localizedMessage))
             }
         }
     }
@@ -91,10 +101,14 @@ class MainViewModel : ViewModel() {
      */
     private fun fetchNewsError() {
         viewModelScope.launch {
-            //返回状态
-            _state.emit(MainViewState.Loading)
-            delay(2000)
-            _state.emit(MainViewState.Error2("出错了"))
+            try {
+                //返回状态
+                _state.emit(MainViewState.Loading)
+                delay(2000)
+                _state.emit(MainViewState.Error(2, "出错了"))
+            } catch (e: java.lang.Exception) {
+
+            }
         }
     }
 }

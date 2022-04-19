@@ -11,6 +11,7 @@ import com.lonbon.mvidemo.status.MainViewState
 import com.lonbon.mvidemo.viewmodel.MainViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +25,14 @@ class MainActivity : AppCompatActivity() {
 
         observeViewModel()
 
+        initClickEvent()
+    }
+
+    /**
+     * 点击事件
+     *
+     */
+    private fun initClickEvent() {
         binding.btnRequestList.setOnClickListener {
             getNetList()
         }
@@ -42,6 +51,9 @@ class MainActivity : AppCompatActivity() {
         binding.btnGoChanelActivity.setOnClickListener {
             ChannelActivity.startChannelActivity(this)
         }
+        binding.btnGoTestFlow.setOnClickListener {
+            TestFlowLifeCycleActivity.startFlowActivity(this)
+        }
     }
 
     /**
@@ -50,35 +62,50 @@ class MainActivity : AppCompatActivity() {
      */
     private fun observeViewModel() {
         lifecycleScope.launch {
-            mainViewModel.state.collect {
-                //故意遗漏 RequestTwoSuccess
-                when (it) {
-                    is MainViewState.Loading -> {
-                        resetView()
-                        binding.tvTip.text = "等待中"
-                    }
-                    is MainViewState.RequestOneSuccess -> {
-                        resetView()
-                        binding.tvShowResult.text = it.news
-                    }
-                    is MainViewState.NoNetWork -> {
-                        resetView()
-                        //提示错误信息
-                        binding.tvTip.text = "没有网络"
-                        binding.btntry.visibility = View.VISIBLE
-                    }
-                    is MainViewState.Error -> {
-                        resetView()
-                        //提示错误信息
-                        binding.tvError.text = it.error
-                        binding.btntry.visibility = View.VISIBLE
-                    }
-                    is MainViewState.Error2 -> {
-                        resetView()
-                        //提示错误信息
-                        binding.tvError.text = it.error
+            try {
+                mainViewModel.state.collect {
+                    //故意遗漏 RequestTwoSuccess
+                    when (it) {
+                        is MainViewState.Loading -> {
+                            resetView()
+                            binding.tvTip.text = "等待中"
+                        }
+                        is MainViewState.RequestOneSuccess<*> -> {
+                            when (it.successType) {
+                                1 -> {
+                                    if (it.news is String) {
+                                        resetView()
+                                        binding.tvShowResult.text = it.news
+                                    }
+                                }
+                                else -> {}
+                            }
+                        }
+                        is MainViewState.NoNetWork -> {
+                            resetView()
+                            //提示错误信息
+                            binding.tvTip.text = "没有网络"
+                            binding.btntry.visibility = View.VISIBLE
+                        }
+                        is MainViewState.Error -> {
+                            when (it.errorType) {
+                                1 -> {
+                                    resetView()
+                                    //提示错误信息
+                                    binding.tvError.text = it.error
+                                    binding.btntry.visibility = View.VISIBLE
+                                }
+                                else -> {
+                                    resetView()
+                                    //提示错误信息
+                                    binding.tvError.text = it.error
+                                }
+                            }
+                        }
                     }
                 }
+            } catch (e: Exception) {
+
             }
         }
     }
