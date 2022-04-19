@@ -64,7 +64,6 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 mainViewModel.state.collect {
-                    //故意遗漏 RequestTwoSuccess
                     when (it) {
                         is MainViewState.Loading -> {
                             resetView()
