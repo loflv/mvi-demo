@@ -27,18 +27,18 @@ class ChanelActivityViewModel : ViewModel() {
     /**
      * 接收事件
      */
-    val userIntent = Channel<MainIntent>(Channel.UNLIMITED)
+    val userIntent = MutableSharedFlow<MainIntent>()
 
     init {
         viewModelScope.launch {
             try {
-                userIntent.consumeAsFlow().collect {
+                userIntent.collect {
                     when (it) {
                         is MainIntent.FetchNew -> fetchAdd()
                         is MainIntent.FetchNewError -> fetchNewsReset()
                     }
                 }
-            }catch (e:Exception){
+            } catch (e: Exception) {
 
             }
 
@@ -53,8 +53,8 @@ class ChanelActivityViewModel : ViewModel() {
     fun dispatch(viewAction: MainIntent) {
         viewModelScope.launch {
             try {
-                userIntent.send(viewAction)
-            }catch (e:Exception){
+                userIntent.emit(viewAction)
+            } catch (e: Exception) {
 
             }
 
@@ -74,7 +74,7 @@ class ChanelActivityViewModel : ViewModel() {
                 i++
                 Log.d("live", "fetchNews1     " + i)
                 _state.emit(i)
-            }catch (e:Exception){
+            } catch (e: Exception) {
 
             }
 
@@ -87,7 +87,7 @@ class ChanelActivityViewModel : ViewModel() {
                 i = 0
                 Log.d("live", "fetchNewsReset     " + i)
                 _state.emit(i)
-            }catch (e:Exception){
+            } catch (e: Exception) {
 
             }
 

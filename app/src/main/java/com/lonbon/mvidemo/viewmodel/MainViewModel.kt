@@ -28,15 +28,14 @@ class MainViewModel : ViewModel() {
 
     /**
      * 接收事件
-     * 使用livedata或者stateflow会导致事件丢失
      */
-    val userIntent = Channel<MainIntent>(Channel.UNLIMITED)
+    val userIntent = MutableSharedFlow<MainIntent>()
 
     init {
         //所有的intent集中处理
         viewModelScope.launch {
             try {
-                userIntent.consumeAsFlow().collect {
+                userIntent.collect {
                     when (it) {
                         is MainIntent.FetchNew -> fetchNews()
                         is MainIntent.FetchNewError -> fetchNewsError()
@@ -58,7 +57,7 @@ class MainViewModel : ViewModel() {
     fun dispatch(viewAction: MainIntent) {
         viewModelScope.launch {
             try {
-                userIntent.send(viewAction)
+                userIntent.emit(viewAction)
             } catch (e: java.lang.Exception) {
 
             }
