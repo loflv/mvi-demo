@@ -48,9 +48,7 @@ class MainActivity : AppCompatActivity() {
             binding.tvShowResult.text = ""
         }
 
-        binding.btnGoChanelActivity.setOnClickListener {
-            ChannelActivity.startChannelActivity(this)
-        }
+
         binding.btnGoTestFlow.setOnClickListener {
             TestFlowLifeCycleActivity.startFlowActivity(this)
         }

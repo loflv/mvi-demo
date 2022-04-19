@@ -66,13 +66,7 @@
         app:layout_constraintTop_toBottomOf="@+id/btnRequestList" />
 
 
-    <Button
-        android:id="@+id/btnGoChanelActivity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="验证线程安全"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/btn_go_test_flow"

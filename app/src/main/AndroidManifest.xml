@@ -17,9 +17,6 @@
             android:name=".ui.TestFlowLifeCycleActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.ChannelActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
