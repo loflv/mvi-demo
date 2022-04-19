@@ -28,10 +28,12 @@ class MainViewModel : ViewModel() {
 
     /**
      * 接收事件
+     * 使用livedata或者stateflow会导致事件丢失
      */
     val userIntent = Channel<MainIntent>(Channel.UNLIMITED)
 
     init {
+        //所有的intent集中处理
         viewModelScope.launch {
             userIntent.consumeAsFlow().collect {
                 when (it) {
@@ -54,6 +56,10 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    /**
+     * 查询热词
+     *
+     */
     private fun fetchNews() {
         viewModelScope.launch {
             //返回状态
@@ -79,6 +85,10 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    /**
+     * 模拟错误情况
+     *
+     */
     private fun fetchNewsError() {
         viewModelScope.launch {
             //返回状态

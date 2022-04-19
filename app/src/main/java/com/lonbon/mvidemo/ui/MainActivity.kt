@@ -38,6 +38,10 @@ class MainActivity : AppCompatActivity() {
         binding.btnClearMes.setOnClickListener {
             binding.tvShowResult.text = ""
         }
+
+        binding.btnGoChanelActivity.setOnClickListener {
+            ChannelActivity.startChannelActivity(this)
+        }
     }
 
     /**
@@ -47,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     private fun observeViewModel() {
         lifecycleScope.launch {
             mainViewModel.state.collect {
-                //故意遗漏
+                //故意遗漏 RequestTwoSuccess
                 when (it) {
                     is MainViewState.Loading -> {
                         resetView()
